@@ -1,0 +1,150 @@
+#3 mongodb instances consist a replica set : "my_replica_set"
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-replica-nodec-0
+  labels:
+    name: mongo-svcc
+spec:
+  clusterIP: None
+  ports:
+  - port: 27017
+    targetPort: 27017
+    protocol: TCP
+    name: mongo-svc-port
+  selector:
+    name: mongo-replica-nodec0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-replica-nodec-1
+  labels:
+    name: mongo-svcc
+spec:
+  clusterIP: None
+  ports:
+  - port: 27017
+    targetPort: 27017
+    protocol: TCP
+    name: mongo-svc-port
+  selector:
+    name: mongo-replica-nodec1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-replica-nodec-2
+  labels:
+    name: mongo-svcc
+spec:
+  clusterIP: None
+  ports:
+  - port: 27017
+    targetPort: 27017
+    protocol: TCP
+    name: mongo-svc-port
+  selector:
+    name: mongo-replica-nodec2
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mongo-replica-rcc1
+  labels:
+    name: mongo-replica-rcc
+spec:
+  replicas: 1
+  selector:
+    name: mongo-replica-nodec0
+  template:
+    metadata:
+      labels:
+        name: mongo-replica-nodec0
+    spec:
+      containers:
+      - name: mongo-replica-nodec0
+        image: registry.dataos.io/liuliu/mongod-replica-set:3.2.10
+        env:
+          - name: mongo_node_name
+            value: mongo-replica-nodec
+          - name: mongo_nodes_number
+            value: "3"
+          - name: mongo_replica_set_name
+            value: my_replica_set3
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-replica-storage0
+          mountPath: /data/db
+      volumes:
+      - name: mongo-replica-storage0
+        emptyDir: {}
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mongo-replica-rcc2
+  labels:
+    name: mongo-replica-rcc
+spec:
+  replicas: 1
+  selector:
+    name: mongo-replica-nodec1
+  template:
+    metadata:
+      labels:
+        name: mongo-replica-nodec1
+    spec:
+      containers:
+      - name: mongo-replica-nodec1
+        image: registry.dataos.io/liuliu/mongod-replica-set:3.2.10
+        env:
+          - name: mongo_node_name
+            value: mongo-replica-nodec
+          - name: mongo_nodes_number
+            value: "3"
+          - name: mongo_replica_set_name
+            value: my_replica_set3
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-replica-storage1
+          mountPath: /data/db
+      volumes:
+      - name: mongo-replica-storage1
+        emptyDir: {}
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mongo-replica-rcc3
+  labels:
+    name: mongo-replica-rcc
+spec:
+  replicas: 1
+  selector:
+    name: mongo-replica-nodec2
+  template:
+    metadata:
+      labels:
+        name: mongo-replica-nodec2
+    spec:
+      containers:
+      - name: mongo-replica-nodec2
+        image: registry.dataos.io/liuliu/mongod-replica-set:3.2.10
+        env:
+          - name: mongo_node_name
+            value: mongo-replica-nodec
+          - name: mongo_nodes_number
+            value: "3"
+          - name: mongo_replica_set_name
+            value: my_replica_set3
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-replica-storage2
+          mountPath: /data/db
+      volumes:
+      - name: mongo-replica-storage2
+        emptyDir: {}

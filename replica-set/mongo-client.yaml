@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  generation: 1
+  labels:
+    openshift.io/deployment-config.name: mongo-node-1
+    run: mongo-node-1
+  name: mongo-client
+spec:
+  replicas: 1
+  selector:
+    deployment: mongo-node-1-1
+    deploymentconfig: mongo-node-1
+    run: mongo-node-1
+  template:
+    metadata:
+      labels:
+        deployment: mongo-node-1-1
+        deploymentconfig: mongo-node-1
+        run: mongo-node-1
+    spec:
+      containers:
+      - image: registry.dataos.io/liuliu/mongo:latest
+        imagePullPolicy: Always
+        name: mongo-client
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  replicas: 0
