@@ -65,6 +65,11 @@ spec:
       containers:
       - name: mongo-replica-node0
         image: registry.dataos.io/liuliu/mongo-replica-20161010
+        livenessProbe:
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
+          tcpSocket:
+            port: 27017
         env:
           - name: mongo_node_name
             value: mongo-replica-node
@@ -80,7 +85,7 @@ spec:
       volumes:
       - name: mongo-replica-storage0
         persistentVolumeClaim:
-          claimName: mongo-storage-1
+          claimName: mongo-test1
 ---
 apiVersion: v1
 kind: ReplicationController
@@ -100,6 +105,11 @@ spec:
       containers:
       - name: mongo-replica-node1
         image: registry.dataos.io/liuliu/mongo-replica-20161010
+        livenessProbe:
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
+          tcpSocket:
+            port: 27017
         env:
           - name: mongo_node_name
             value: mongo-replica-node
@@ -115,7 +125,7 @@ spec:
       volumes:
       - name: mongo-replica-storage1
         persistentVolumeClaim:
-          claimName: mongo-storage-2
+          claimName: mongo-test2
 
 ---
 apiVersion: v1
@@ -136,6 +146,11 @@ spec:
       containers:
       - name: mongo-replica-node2
         image: registry.dataos.io/liuliu/mongo-replica-20161010
+        livenessProbe:
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
+          tcpSocket:
+            port: 27017
         env:
           - name: mongo_node_name
             value: mongo-replica-node
@@ -151,4 +166,4 @@ spec:
       volumes:
       - name: mongo-replica-storage2
         persistentVolumeClaim:
-          claimName: mongo-storage-3
+          claimName: mongo-test3

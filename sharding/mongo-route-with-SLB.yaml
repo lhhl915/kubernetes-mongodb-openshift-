@@ -52,6 +52,9 @@ spec:
       containers:
       - name: mongo-shardsctl1
         image: registry.dataos.io/liuliu/mongos
+        livenessProbe:
+          tcpSocket:
+            port: 27017
         args:
 #        - mongos
         - "--configdb"
@@ -99,6 +102,11 @@ spec:
       containers:
       - name: mongo-shardsctl2
         image: registry.dataos.io/liuliu/mongos
+        livenessProbe:
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+          tcpSocket:
+            port: 27017
         args:
 #        - mongos
         - "--configdb"

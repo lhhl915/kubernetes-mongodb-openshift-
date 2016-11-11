@@ -77,6 +77,9 @@ spec:
       containers:
       - name: mongo-configsvc0
         image: registry.dataos.io/liuliu/mongodb-configsvr:3.2.10 
+        livenessProbe:
+          tcpSocket:
+            port: 27017
         env:
           - name: mongo_node_name
             value: mongo-configsvc
@@ -124,6 +127,9 @@ spec:
       containers:
       - name: mongo-configsvc1
         image: registry.dataos.io/liuliu/mongodb-configsvr:3.2.10
+        livenessProbe:
+          tcpSocket:
+            port: 27017
         env:
           - name: mongo_node_name
             value: mongo-configsvc
@@ -172,6 +178,9 @@ spec:
       containers:
       - name: mongo-configsvc2
         image: registry.dataos.io/liuliu/mongodb-configsvr:3.2.10
+        livenessProbe:
+          tcpSocket:
+            port: 27017
         env:
           - name: mongo_node_name
             value: mongo-configsvc

@@ -22,6 +22,11 @@ spec:
       containers:
       - image: registry.dataos.io/liuliu/mongo:latest
         imagePullPolicy: Always
+        livenessProbe:
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+          tcpSocket:
+            port: 27017
         name: mongo-client
         resources: {}
         terminationMessagePath: /dev/termination-log
