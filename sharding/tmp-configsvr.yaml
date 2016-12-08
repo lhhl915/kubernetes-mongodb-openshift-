@@ -80,6 +80,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 27017
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
         env:
           - name: mongo_node_name
             value: mongo-replica-nodec
@@ -125,6 +127,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 27017
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
         env:
           - name: mongo_node_name
             value: mongo-replica-nodec
@@ -169,8 +173,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 27017
-          initialDelaySeconds: 20
-          timeoutSeconds: 5
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
         env:
           - name: mongo_node_name
             value: mongo-replica-nodec

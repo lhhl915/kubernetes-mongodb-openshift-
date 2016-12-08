@@ -13,11 +13,9 @@ if [ ! -z "$mongo_node_name" ] && [ ! -z "$mongo_replica_set_name" ]; then
   content="$content $mongo_members]});"
   # create the mongo-shell file: replica_init.js
   echo $content > replica_init.js
-
+  # important
+  sleep 15
   mongod --replSet $mongo_replica_set_name &
-  sleep 30
-  mongod --smallfiles --configsvr &
-
   until nc -z localhost 27017
   do
       echo "Wait mongoDB to be ready"
@@ -26,8 +24,9 @@ if [ ! -z "$mongo_node_name" ] && [ ! -z "$mongo_replica_set_name" ]; then
   echo "MongoDB is ready"
   # Start replica set
   mongo < ./replica_init.js
+
   tail -f /dev/null
 else
 	echo "Starting up in standalone mode"
-    mongod
+    mongod 
 fi

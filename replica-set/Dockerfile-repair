@@ -1,0 +1,11 @@
+# mongo-cluster
+# replica-set part
+FROM registry.dataos.io/liuliu/mongo-test2:3.0
+
+EXPOSE 27017
+
+COPY start_replica.sh /opt/mongo/
+
+WORKDIR /opt/mongo
+
+CMD /opt/mongo/start_replica.sh

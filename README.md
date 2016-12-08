@@ -5,20 +5,44 @@
 
 ### 一、replica-set模式：
 ##### 1.build镜像
+
+##### 1.1 使用源镜像build，可能因为网络原因build失败
+
 ```
 cd replica-set
-docker build -t registry.dataos.io/liuliu/mongo-replica-20161010 .
+docker build -t registry.dataos.io/liuliu/mongo-replica-set:latest .
+docker push registry.dataos.io/liuliu/mongo-replica-set:latest  #push到私有镜像库
+```
+##### 1.2 直接使用以下镜像，如果build失败
 
-docker push  #push到私有镜像库
+```
+# 构建好的镜像
+registry.dataos.io/liuliu/mongo-replica-set:latest
+```
+##### 1.3 再或者使用以下修改过镜像源的Dockerfile
+
+```
+cd replica-set
+docker build -f Dockerfile-repair -t registry.dataos.io/liuliu/mongo-replica-set:latest .
+docker push registry.dataos.io/liuliu/mongo-replica-set:latest  #push到私有镜像库
+
 ```
  
-##### 2.创建持久化卷（略）
+##### 2.创建持久化卷
+
+```
+mongo-test1 # 例子
+mongo-test2 # 例子 
+mongo-test3 # 例子
+```
 
 ##### 3.修改mongo-replica-rs1.yaml中镜像地址(改成dockerfile的镜像地址)和持久化卷名称
 
 ##### 4.创建mongodb replica-set编排，以下选其一即可。
 
 ```
+oc create -f mongo-replica-rs-passwd.yaml  #持久化卷+密码验证
+
 oc create -f mongo-replica-rs1.yaml  #持久化卷
 
 oc create -f mongo-replica-not-storage.yaml  #未持久化
@@ -38,7 +62,7 @@ oc create -f mongo-client.yaml
 
 oc rsh <podID> bash
 
-mongo  --host my_replica_set1/mongo-replica-nodea-0:27017,mongo-replica-nodea-1:27017,mongo-replica-nodea-2:27017 admin     #连接测试replica-set
+mongo -u<mongodb_user> -p<mongodb_passwd> --host my_replica_set/mongo-replica-node-1:27017,mongo-replica-node-2:27017,mongo-replica-node-3:27017 admin     #连接测试replica-set
 ```
 
 ##### 4-3. 下面我就以node.js利用rrestjs框架 和 node-mongodb-native 模块进行mongodb副本集的操作（未实验）
@@ -55,6 +79,16 @@ use admin;
 db.createUser({user:'mongo',pwd:'mongodbpass',roles:['userAdminAnyDatabase','dbAdminAnyDatabase']})
 #查看创建的用户：
 show users;
+
+#创建测试库及其账号：
+use test
+db.createUser(
+   {
+       user: "test1",
+       pwd: "12345678",
+       roles: [ { role: "readWrite", db: "test" } ]
+     }
+ )
 
 #插入数据
 db.test.insert({Name: "test"})

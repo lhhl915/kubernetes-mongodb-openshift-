@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-replica-nodec-0
+  name: mongo-replica-node-0
   labels:
-    name: mongo-svcc
+    name: mongo-svc
 spec:
   clusterIP: None
   ports:
@@ -13,14 +13,14 @@ spec:
     protocol: TCP
     name: mongo-svc-port
   selector:
-    name: mongo-replica-nodec0
+    name: mongo-replica-node0
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-replica-nodec-1
+  name: mongo-replica-node-1
   labels:
-    name: mongo-svcc
+    name: mongo-svc
 spec:
   clusterIP: None
   ports:
@@ -29,14 +29,14 @@ spec:
     protocol: TCP
     name: mongo-svc-port
   selector:
-    name: mongo-replica-nodec1
+    name: mongo-replica-node1
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-replica-nodec-2
+  name: mongo-replica-node-2
   labels:
-    name: mongo-svcc
+    name: mongo-svc
 spec:
   clusterIP: None
   ports:
@@ -45,38 +45,44 @@ spec:
     protocol: TCP
     name: mongo-svc-port
   selector:
-    name: mongo-replica-nodec2
+    name: mongo-replica-node2
 ---
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: mongo-replica-rcc1
+  name: mongo-replica-rc1
   labels:
-    name: mongo-replica-rcc
+    name: mongo-replica-rc
 spec:
   replicas: 1
   selector:
-    name: mongo-replica-nodec0
+    name: mongo-replica-node0
   template:
     metadata:
       labels:
-        name: mongo-replica-nodec0
+        name: mongo-replica-node0
     spec:
       containers:
-      - name: mongo-replica-nodec0
-        image: registry.dataos.io/liuliu/mongod-replica-set:3.2.10
+      - name: mongo-replica-node0
+        image: registry.dataos.io/liuliu/mongo-replica-set:latest
+#        image: registry.dataos.io/liuliu/mongo-replica-set:115
+        imagePullPolicy: Always
         livenessProbe:
+          initialDelaySeconds: 60
+          timeoutSeconds: 15
           tcpSocket:
             port: 27017
-          initialDelaySeconds: 50
-          timeoutSeconds: 10
         env:
           - name: mongo_node_name
-            value: mongo-replica-nodec
+            value: mongo-replica-node
           - name: mongo_nodes_number
             value: "3"
           - name: mongo_replica_set_name
-            value: my_replica_set3
+            value: my_replica_set
+          - name: mongodb_user
+            value: "mongo"
+          - name: mongodb_passwd
+            value: "as2016"
         ports:
         - containerPort: 27017
         volumeMounts:
@@ -84,38 +90,45 @@ spec:
           mountPath: /data/db
       volumes:
       - name: mongo-replica-storage0
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: mongodb-test1
 ---
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: mongo-replica-rcc2
+  name: mongo-replica-rc2
   labels:
-    name: mongo-replica-rcc
+    name: mongo-replica-rc
 spec:
   replicas: 1
   selector:
-    name: mongo-replica-nodec1
+    name: mongo-replica-node1
   template:
     metadata:
       labels:
-        name: mongo-replica-nodec1
+        name: mongo-replica-node1
     spec:
       containers:
-      - name: mongo-replica-nodec1
-        image: registry.dataos.io/liuliu/mongod-replica-set:3.2.10
+      - name: mongo-replica-node1
+        image: registry.dataos.io/liuliu/mongo-replica-set:latest
+#        image: registry.dataos.io/liuliu/mongo-replica-set:115
+        imagePullPolicy: Always
         livenessProbe:
+          initialDelaySeconds: 60
+          timeoutSeconds: 15
           tcpSocket:
             port: 27017
-          initialDelaySeconds: 50
-          timeoutSeconds: 10
         env:
           - name: mongo_node_name
-            value: mongo-replica-nodec
+            value: mongo-replica-node
           - name: mongo_nodes_number
             value: "3"
           - name: mongo_replica_set_name
-            value: my_replica_set3
+            value: my_replica_set
+          - name: mongodb_user
+            value: "mongo"
+          - name: mongodb_passwd
+            value: "as2016"
         ports:
         - containerPort: 27017
         volumeMounts:
@@ -123,38 +136,46 @@ spec:
           mountPath: /data/db
       volumes:
       - name: mongo-replica-storage1
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: mongodb-test2
+
 ---
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: mongo-replica-rcc3
+  name: mongo-replica-rc3
   labels:
-    name: mongo-replica-rcc
+    name: mongo-replica-rc
 spec:
   replicas: 1
   selector:
-    name: mongo-replica-nodec2
+    name: mongo-replica-node2
   template:
     metadata:
       labels:
-        name: mongo-replica-nodec2
+        name: mongo-replica-node2
     spec:
       containers:
-      - name: mongo-replica-nodec2
-        image: registry.dataos.io/liuliu/mongod-replica-set:3.2.10
+      - name: mongo-replica-node2
+        image: registry.dataos.io/liuliu/mongo-replica-set:latest
+#        image: registry.dataos.io/liuliu/mongo-replica-set:115 
+        imagePullPolicy: Always
         livenessProbe:
+          initialDelaySeconds: 60
+          timeoutSeconds: 15
           tcpSocket:
             port: 27017
-          initialDelaySeconds: 50
-          timeoutSeconds: 10
         env:
           - name: mongo_node_name
-            value: mongo-replica-nodec
+            value: mongo-replica-node
           - name: mongo_nodes_number
             value: "3"
           - name: mongo_replica_set_name
-            value: my_replica_set3
+            value: my_replica_set
+          - name: mongodb_user
+            value: "mongo"
+          - name: mongodb_passwd
+            value: "as2016"
         ports:
         - containerPort: 27017
         volumeMounts:
@@ -162,4 +183,5 @@ spec:
           mountPath: /data/db
       volumes:
       - name: mongo-replica-storage2
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: mongodb-test3

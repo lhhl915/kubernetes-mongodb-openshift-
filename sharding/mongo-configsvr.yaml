@@ -80,6 +80,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 27017
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
         env:
           - name: mongo_node_name
             value: mongo-configsvc
@@ -130,6 +132,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 27017
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
         env:
           - name: mongo_node_name
             value: mongo-configsvc
@@ -181,6 +185,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 27017
+          initialDelaySeconds: 50
+          timeoutSeconds: 10
         env:
           - name: mongo_node_name
             value: mongo-configsvc
